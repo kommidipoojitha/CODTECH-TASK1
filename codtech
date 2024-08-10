@@ -1,0 +1,56 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+from sklearn.datasets import load_iris
+
+# Load the dataset and convert it to a DataFrame
+iris = load_iris()
+iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+iris_df['species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
+
+# Step 1: Display the first few rows of the dataset
+print("First few rows of the dataset:")
+print(iris_df.head())
+
+# Step 2: Summary statistics
+print("\nSummary statistics:")
+print(iris_df.describe())
+
+# Step 3: Check for missing values
+print("\nMissing values:")
+print(iris_df.isnull().sum())
+
+# Step 4: Visualizing Distributions
+plt.figure(figsize=(10, 6))
+for i, column in enumerate(iris_df.columns[:-1], 1):
+    plt.subplot(2, 2, i)
+    sns.histplot(iris_df[column], kde=True, color='blue')
+    plt.title(f'Distribution of {column}')
+plt.tight_layout()
+plt.show()
+
+# Step 5: Pair Plot to visualize relationships between features
+sns.pairplot(iris_df, hue='species', markers=["o", "s", "D"])
+plt.suptitle('Pair Plot of Iris Features', y=1.02)
+plt.show()
+
+# Step 6: Correlation Matrix and Heatmap
+plt.figure(figsize=(8, 6))
+
+# Exclude the 'species' column from the correlation calculation
+corr_matrix = iris_df.drop(columns=['species']).corr()
+
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Heatmap')
+plt.show()
+# Step 7: Detecting Outliers using Boxplots
+plt.figure(figsize=(10, 6))
+for i, column in enumerate(iris_df.columns[:-1], 1):
+    plt.subplot(2, 2, i)
+    sns.boxplot(x='species', y=column, data=iris_df)
+    plt.title(f'Boxplot of {column} by Species')
+plt.tight_layout()
+plt.show()
